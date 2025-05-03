@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>log into silly.chat</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="icon" href="favicon.png" type="image/x-icon">
+</head>
+<body>
+    <div class="top"><span style="color: white;" >silly.chat</span></div>
+    <div class="window">
+        <form id="registerForm">
+            <h1 style="color:white;">Login</h1>
+            <input type="text" id="username" placeholder="username" required>
+            <input type="password" id="password" placeholder="password" required>
+            <button id="login" type="button" onclick="validate()">Log in</button>
+            <button id="login" type="button" onclick="qli()">Quick Log in</button>
+            <button type="submit">Create account</button>
+        </form>
+    </div>
+    <script>
+        function qli(){
+            const DEFAULT_CHAT_PATH='/private/v4Net/index.html'
+            window.location=DEFAULT_CHAT_PATH
+        }
+    </script>
+    <script src="app1.js"></script>
+</body>
+</html>

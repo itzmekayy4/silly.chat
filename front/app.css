@@ -1,0 +1,145 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    height: 100%;
+    overflow:auto   ;
+}
+
+body{
+    background-color: black;
+    color: rgb(194, 194, 194);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100vh;
+    font-family: regular;
+    backdrop-filter: blur(100px);
+}
+
+.app-mount{
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100%;
+    width: 100%;
+}
+.inner-app{
+    height: 100%;
+    width: 100%;
+
+}
+.topbar{
+    background-color: rgb(0, 0, 0);
+    width: 100%;
+    height: 2.7rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(60deg, #297b7e, #2539a5,#a5259a);
+    backdrop-filter: blur(1000px);
+    overflow: hidden;
+    text-align: center;
+    text-overflow:clip;
+    padding-left: 10vw;
+    padding-right: 10vw;
+}
+.topbar2{
+    background-color: rgba(0, 0, 0, 0.473);
+    width: 100%;
+    height: 4.4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 15vw;
+    padding-right: 15vw;
+    backdrop-filter: blur(100px);
+}
+
+
+.content{
+    margin-top: 10rem;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+.buttons{
+    margin-top: 3rem;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    align-items: center;
+}
+
+button{
+    background-color: rgb(17, 17, 17);
+    outline: none;
+    border: none;
+    color: white;
+    padding: 1rem;
+    padding-left: 1.4rem;
+    padding-right: 1.4rem;
+    margin-left: 1rem;
+    border-radius: 0.5rem;
+    font-size:medium;
+    cursor: pointer;
+    border: 1px solid rgba(53, 53, 53, 0.527);
+}
+
+.top-but{
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: row;
+    align-items: flex-end;
+}
+
+@font-face {
+    font-family: 'bold';
+    src: url('assets/font/bold.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'medium';
+    src: url('assets/font2/Inter_18pt-Medium.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'regular';
+    src: url('assets/font2/Inter_18pt-Regular.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'thin';
+    src: url('assets/font2/Inter_18pt-Thin.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'semibold';
+    src: url('assets/font/semibold.ttf') format('truetype');
+}
+
+
+@media (max-width: 768px) {
+    .desc{
+        padding-left: 10vw;padding-right: 10vw;
+    }
+    .top-but{
+        display: none;
+    }
+    .topbar2{
+        justify-content: center;
+    }
+}
+
+.loginbg{
+    background: linear-gradient(60deg, #297b7e, #2539a5,#a5259a); /* Gradient from pink to peach */
+    padding: 19rem 20rem;
+    position: absolute;
+    z-index: -1;
+    filter: blur(100px);
+    border-radius: 200rem;
+}

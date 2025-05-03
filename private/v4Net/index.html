@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="silly.chat is an small project in development. go check it out!">
+    <title>silly.chat</title>
+    <link rel="stylesheet" href="app.css">
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+</head>
+<body>
+    <div class="app-mount">
+        <div class="topbar">
+            <span style="font-weight: 900; font-size: 0.9rem; font-family: regular; color: rgb(190, 190, 190);">silly.chat</span>
+        </div>
+        <div class="window">
+            <div class="not-app-mount">
+                <div class="app-topbar">
+                    <div class="inner-app-topbar">
+                        <div class="conv-input">
+                            <input class="input" type="text" placeholder="Find or start a conversation">
+                        </div>
+                        <div class="contacts">
+                            <span style="margin-right: 1vw;">friends</span>
+                            <button style="margin-right: 0.3vw;">all</button>
+                            <button>discover people</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="app-layout">
+                    <div class="app-aside-bar" style="padding-left: 1.2rem;">
+                        <div class="inner-aside-bar">
+                            <div class="content-control-buttons" style="margin-top: 2rem;">
+                                <button>Friends</button>
+                                <button>Upgrade</button>
+                                <button>Discover</button>
+                            </div>
+                            <div class="direct-msgs" style="margin-top: 1.4rem;">
+                                <div class="top" style="margin-bottom: 0.6rem;">
+                                    <span style="color: grey; font-weight: 900;">Direct messages</span>
+                                </div>
+                                <div class="profiles">
+                                    <button id="defprof" style="display: none; background-color: black; width: 10vw;" class="profile">
+                                        <img class="pfp" src="https://i.pinimg.com/736x/cb/87/1e/cb871e4708cba30bbdc95b300abb9fab.jpg" style="border-radius: 100rem; height: 2.2rem; margin-right: 0.7rem; ">
+                                        <span class="username" style="font-size: 0.9rem; font-weight: 500;">cat murderer 300</span>
+                                    </button>
+                                </div>
+                                <div class="local-profile">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="app-main-content">
+                        <div id="app-current-channel" class="app-current-channel" style="display: none;">
+                            <div class="chat-topbar">
+                                <div id="inner-chat-top-bar" class="inner-chat-top-bar">
+                                    <img class="current-chat-pfp" src="https://i.pinimg.com/736x/c2/bc/3d/c2bc3deefeeb6d0e23f0f28cafbe717b.jpg" style="border-radius: 100rem; height: 2.2rem; margin-right: 0.7rem;">
+                                    <span class="current-chat-user" style="font-size: 0.9rem; font-weight: 500;">wumpus</span>             
+                                </div>
+                            </div>
+                            <div class="inner-content">
+                                <div id="msgs" class="messages" style="overflow-y: auto;">
+                                    <div id="msg" class="msg" style="display: none;">
+                                        <div class="inner-msg" style="padding-left: 2.2rem;">
+                                            <div class="inner-pfp" style="display: block; margin: auto; text-align: center;">
+                                                <img class="current-msg-pfp" src="" style= "display: flex; justify-content: bottom; border-radius: 100rem; height: 2.2rem; margin-right: 0.7rem;">
+                                            </div>
+                                            <div class="msg-content">
+                                                <div>
+                                                    <span class="msg-user" style="font-family: medium;">itzme_kayy4</span>
+                                                    <span class="msg-times" style="font-size: 0.7rem; color: grey; font-family: regular;">12:00 PM</span>
+                                                </div>
+                                                <p class="msg-txt-content" style="font-family: regular;">hello!!</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="userInput">
+                                    <input id="user-input" type="text" placeholder="Message wumpus" class="user-input">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="app-aside-bar-right">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>  
+    </div>
+
+    <script>
+        function clearMessages() {
+            maincontainer.innerHTML = '';
+        }
+        async function loadUsers() {
+            const res = await fetch('/getAllUsers')
+            const users = await res.json()
+            const container = document.querySelector('.profiles')
+            const template = document.getElementById('defprof')
+
+            users.accounts.forEach(user => {
+                const clone = template.cloneNode(true)
+                clone.style = 'display:flex;'
+                clone.querySelector('.username').textContent = user.username
+                clone.querySelector('.pfp').src = user.pfp
+                clone.onclick = () => {}
+                container.appendChild(clone)
+                clone.onclick = async() => {
+                    if (currentChannelId===user.id) return
+                    document.getElementById('app-current-channel').style="display: flex;"
+                    try {
+                        const res = await fetch('/create-ch', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                firstId: 122,
+                                secondId: user.id, 
+                            })
+                        })
+                        const data=await res.json()
+                        const innertopbar=document.getElementById('inner-chat-top-bar')
+                        currentChannelId=data.channelId
+                        socket.emit('leaveChannel', currentChannelId)
+                        socket.emit('joinChannel',currentChannelId)
+                        innertopbar.querySelector('.current-chat-user').textContent = user.username
+                        txtbox.placeholder=`Message ${user.username}`
+                        innertopbar.querySelector('.current-chat-pfp').src = user.pfp
+                        clearMessages()
+                        fetchMessages(currentChannelId)
+                    } catch (error) {
+                        console.log(error);
+                        //alert('Error fetching messages');
+                    }
+                }
+            })
+        }
+
+        loadUsers()
+    </script>
+
+    <script>
+        async function fetchMessages(targetId) {
+            try {
+                const res = await fetch(`/channels/${targetId}`);
+                const messages = await res.json();
+                const userIds = [...new Set(messages.map(m => m.ownerid))];
+                const userFetches = userIds.map(id =>
+                fetch(`/users/${id}`).then(r => r.json()).then(u => [id, u])
+                );
+                const entries = await Promise.all(userFetches);
+                const usersById = Object.fromEntries(entries);
+
+                if (!res.ok) {
+                    throw new Error('Failed to fetch messages11');
+                }
+                clearMessages()
+                messages.forEach(msg => {
+                    msg.user = usersById[msg.ownerid]
+                    displayMessage2(msg)
+                });
+            } catch (error) {
+                console.log(error);
+                //alert('Error fetching messages');
+            }
+        }
+    </script>
+
+    <script>
+        let currentChannelId = 0
+        const socket = io('https://sillychat.up.railway.app/', {
+            withCredentials: true
+        });
+        socket.on('connect', (data) => {
+            console.log('websocket connected');
+            fetchMessages(currentChannelId)
+        });
+        const txtbox = document.getElementById('user-input')
+        const maincontainer = document.getElementById('msgs')
+        txtbox.addEventListener('keydown', async (e) => {
+            if (e.key === 'Enter') {
+                if (txtbox.value==='') return
+                e.preventDefault()
+                let lastText
+                lastText=txtbox.value
+                const text = txtbox.value
+                console.log('localuser: ',localuser)
+                txtbox.value = ''
+                try{
+                    const temp= localmsg(localuser,txtbox.value)
+                    const res= await postMsg(lastText)
+                    temp.remove()
+                }catch{
+                    temp.style='color: red;'
+                }
+            }
+        })
+
+        async function postMsg(msg) {
+            try {
+                const res = await fetch('/sendMessage', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: msg,
+                        localId: 666,
+                        channelId: currentChannelId
+                    })
+                })
+                const text = await res.text()
+            } catch (err) {
+                console.log(err)
+                alert('could not connect to server')
+            }
+        }
+        const template = document.getElementById('msg')
+        function formatTimestamp(isoString) {
+            const msgDate = new Date(isoString)
+            const now = new Date()
+
+            const isToday = msgDate.toDateString() === now.toDateString()
+
+            const yesterday = new Date()
+            yesterday.setDate(now.getDate() - 1)
+            const isYesterday = msgDate.toDateString() === yesterday.toDateString()
+
+            const options = { hour: 'numeric', minute: '2-digit', hour12: true }
+            const timeStr = msgDate.toLocaleTimeString(undefined, options)
+
+            if (isToday) return timeStr
+            if (isYesterday) return `yesterday, ${timeStr}`
+            return msgDate.toLocaleDateString() + ', ' + timeStr
+        }
+
+        async function displayMessage2(data) {
+            const clone = template.cloneNode(true)
+            console.log(data)
+            try {
+                const res = await fetch(`/users/${data.ownerid}`)
+                if (res.ok) {
+                    const userData = await res.json()
+                    console.log('user data',userData)
+                    clone.querySelector('.msg-user').innerText = userData.username
+                    clone.querySelector('.current-msg-pfp').src = userData.pfp
+                    clone.style="display: flex;"
+                    console.log(data.username)
+                    console.log(data.message)
+                    clone.querySelector('.msg-txt-content').innerText = data.message
+                    clone.querySelector('.msg-times').innerText = formatTimestamp(data.timestamp)
+                    maincontainer.appendChild(clone)
+                    maincontainer.scrollTop = maincontainer.scrollHeight
+                }
+            } catch (err) {
+
+            }
+        }
+
+        function localmsg(userData, textmsg) {
+            const clone = template.cloneNode(true)
+            
+            clone.querySelector('.msg-user').innerText = userData.username
+            clone.querySelector('.current-msg-pfp').src = userData.pfp
+            clone.querySelector('.msg-txt-content').innerText = textmsg
+            clone.querySelector('.msg-times').innerText = formatTimestamp(new Date().toISOString())
+            
+            clone.style.display = 'flex'
+            clone.style.opacity = 0.5
+
+            maincontainer.appendChild(clone)
+            maincontainer.scrollTop = maincontainer.scrollHeight
+            return clone
+        }
+
+
+        socket.on('NewMessage', (msg) => {
+            if (!msg) return
+            if (msg.channelId.toString() === currentChannelId.toString()) {
+                displayMessage2(msg)
+            }
+        })
+
+    </script>
+
+
+    <script>
+        let localuser
+        async function getLocalUser(){
+            const res = await fetch('/users/0')
+            if (res.ok) {
+                localuser= await res.json()                
+            }
+        }
+        async function abc() {
+            await getLocalUser()
+        }
+        abc()
+    </script>
+</body>
+</html>

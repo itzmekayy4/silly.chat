@@ -1,0 +1,167 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    height: 100%;
+    overflow:auto   ;
+}
+
+body{
+    background-color: black;
+    color: rgb(194, 194, 194);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100vh;
+    font-family: regular;
+    backdrop-filter: blur(100px);
+}
+
+.app-mount{
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100%;
+    width: 100%;
+}
+.inner-app{
+    height: 100%;
+    width: 100%;
+
+}
+.topbar{
+    background-color: rgb(0, 0, 0);
+    width: 100%;
+    height: 2.7rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(60deg, #297b7e, #2539a5,#a5259a);
+    backdrop-filter: blur(100px);
+    margin-bottom: 1rem;
+    overflow: hidden;
+    text-align: center;
+    text-overflow:clip;
+    padding-left: 10vw;
+    padding-right: 10vw;
+}
+.topbar2{
+    background-color: rgb(0, 0, 0);
+    width: 100%;
+    height: 2.7rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 15vw;
+    padding-right: 15vw;
+}
+
+
+.content{
+    margin-top: 10rem;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+.buttons{
+    margin-top: 3rem;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    align-items: center;
+}
+
+button{
+    background-color: rgb(32, 32, 32);
+    outline: none;
+    border: none;
+    color: white;
+    padding: 1rem;
+    padding-left: 1.4rem;
+    padding-right: 1.4rem;
+    border-radius: 0.5rem;
+    font-size:medium;
+    cursor: pointer;
+}
+
+.top-but{
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: row;
+    align-items: flex-end;
+}
+
+@font-face {
+    font-family: 'bold';
+    src: url('/fonts/inter/Inter_18pt-Bold.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'medium';
+    src: url('/fonts/inter/Inter_18pt-Medium.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'regular';
+    src: url('/fonts/inter/Inter_18pt-Regular.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'thin';
+    src: url('/fonts/inter/Inter_18pt-Thin.ttf') format('truetype');
+}
+
+
+.login{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 1rem;
+    padding: 9vh 4vw;
+    background-color: rgba(0, 0, 0, 0.144);
+    backdrop-filter: blur(10px);
+
+}
+
+input{
+    background-color: rgba(7, 7, 7, 0.322);
+    backdrop-filter: blur(20px);
+    padding: 1vh 1vw;
+    outline: none;
+    border-radius: 0.5rem;
+    border: none;
+    color: white;
+}
+
+.loginbg{
+    background: linear-gradient(60deg, #297b7e, #2539a5,#a5259a); /* Gradient from pink to peach */
+    padding: 13rem 11rem;
+    position: absolute;
+    z-index: -1;
+    filter: blur(100px);
+}
+.inputs{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+@media (max-width: 768px) {
+    .desc{
+        padding-left: 10vw;padding-right: 10vw;
+    }
+    .top-but{
+        display: none;
+    }
+    .topbar2{
+        justify-content: center;
+    }
+}

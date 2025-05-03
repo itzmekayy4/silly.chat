@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>synth's api: logs</title>
+    <style>
+        body{
+            background-color: rgb(0, 0, 0); 
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        @font-face {
+            font-family: 'font';
+            src: url('https://raw.githubusercontent.com/itzmekayy4/font/main/display.ttf') format('truetype');
+        }
+    </style>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+</head>
+<body>
+    <div id="log-container">
+    </div>
+    <script>
+        const socket = io('http://localhost:3000/', {
+            withCredentials: true
+        });
+        socket.on('connect', () => {
+            console.log('websocket connected');
+        });
+        const div1 = document.createElement('div');
+        div1.className = 'log';
+        div1.textContent = `content not editable`;
+        div1.style.fontFamily = 'font';
+        div1.style.color = 'white';
+        div1.style.fontWeight = '100';
+
+        document.getElementById('log-container').appendChild(div1);
+        const seenLogs = new Set();
+
+        async function fetchlogs() {
+    const res = await fetch('/get-logs');
+    const data = await res.json();
+
+    const cont = document.getElementById('log-container');
+
+    data.forEach(log => {
+        if (seenLogs.has(log.timestamp)) return;
+
+        seenLogs.add(log.timestamp);
+
+        const div = document.createElement('div');
+        div.className = 'log';
+        div.textContent = `[${log.timestamp}] ${log.message}`;
+        div.style.fontFamily = 'Arial, Helvetica, sans-serif';
+        div.style.fontWeight = '500';
+        div.style.color = 'white';
+        cont.appendChild(div);
+    });
+        }
+
+        
+        socket.on('logs', (data) => {
+            console.log('received logs');
+            fetchlogs()
+        });
+        fetchlogs();
+    </script>
+</body>
+</html>
