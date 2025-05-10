@@ -1,0 +1,560 @@
+    <script> //electron app client window controller
+        if (window.electron){
+            document.querySelector('.windowOptions').style.display='flex'
+            console.log('%c🧩 [electron app]', 'background: #2c2f33; color: #00b0f4; padding: 2px 4px; border-radius: 4px;', 'electron app detected');
+        }else{
+            document.querySelector('.windowOptions').style.display='none'
+            console.log('%c🧩 [electron app]', 'background: #2c2f33; color: #00b0f4; padding: 2px 4px; border-radius: 4px;', 'browser detected');
+        }
+        let cmistatus=true
+        const max=document.getElementById('max')
+        function changeMaxIco(){
+            if (cmistatus===false){
+                max.innerHTML='&#xE922;'
+                cmistatus=true
+            }else{
+                max.innerHTML='&#xE923;'
+                cmistatus=false
+            }
+        }
+    </script>
+
+
+    <script>
+        const pval=document.getElementById('pfpin')
+        function updPfp(){
+            const newpfp=pval.value 
+            fetch('/updatePfp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ pfp:newpfp })
+            })
+            .then(res => res.json())
+            .then(console.log)
+        }
+    </script>
+
+    <script>
+        const dropprofilebutt=document.querySelector('#drop-profile-button')
+        const dropdown1=document.querySelector('#drop-profilee')
+        let activedropdownstate=false
+        dropprofilebutt.addEventListener('click',()=>{
+            if (activedropdownstate===true){
+                dropdown1.classList.toggle('visible')
+                activedropdownstate=false
+            }else{
+                activedropdownstate=true
+                dropdown1.classList.toggle('visible')
+            }
+        })
+    </script>
+
+    <script>
+        console.log('%c🧩 [render]', 'background: #2c2f33; color: #00b0f4; padding: 2px 4px; border-radius: 4px;', 'started listening for dcl');
+        if (!dev) {
+            document.querySelector('.app-loader-mount').style='display:none;'
+        }
+        window.addEventListener('DOMContentLoaded',()=>{
+            console.log('%c🧩 [render]', 'background: #2c2f33; color: #00b0f4; padding: 2px 4px; border-radius: 4px;', 'dom content loaded');
+
+                setTimeout(()=>{
+                if (!dev) return
+                document.querySelector('.spinner-wrapper').classList.add('hide')
+                document.querySelector('.app-loader-mount').classList.add('hide')
+                console.log('%c🧩 [render]', 'background: #2c2f33; color: #00b0f4; padding: 2px 4px; border-radius: 4px;', 'removed loader');
+            },1500)
+            setTimeout(()=>{
+                if (!dev) return
+                document.querySelector('.app-loader-mount').style='display:none;'
+            },2000)
+        })
+    </script>
+
+
+    <script>
+        const content0 = document.getElementById('app-main-content');
+        const content1 = document.getElementById('app-aside-bar');
+        function isDesktop(){
+            return !/Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+        }
+
+        function u0(){
+            if (window.innerWidth<=748){
+                const content = document.getElementById('app-main-content');
+                const content1 = document.getElementById('app-aside-bar');
+                content.style.display="flex"
+                //content1.style='width: 22rem; margin-left:1rem;'
+                innerchatbar.classList.add('onpc')
+                if (!isDesktop()){
+                    //content1.classList.add('mob')
+                    content1.style.width='100%'
+                    hideButton.style.display="flex"
+                    innerchatbar.classList.remove('onpc')
+                    hide()
+                }
+            }else{
+                hideButton.style.display="none"
+                content.style.display="flex"
+                innerchatbar.classList.add('onpc')
+                content1.style.width='22rem'
+                if (isDesktop()){
+                    content1.classList.remove('mob')
+                    content.style.display="flex"
+                    document.querySelector('.mobileSendButton').style.display='none'
+                    normal()
+                }            }
+            if (!isDesktop()){ //!
+                content.style.display="none"
+                document.querySelector('.mobileSendButton').style.display='flex'
+                content0.style="display:flex;"
+                //content1.style='width: 22rem; margin-left:1rem;'
+                hideButton.style="display:flex;"
+            }
+        }
+        window.addEventListener('load', u0);
+        window.addEventListener('resize', u0);
+    </script>
+
+
+    <script>
+        //formatting msgs
+        function formatUrl(message){
+            const regex= /(https?:\/\/[^\s]+)/g
+            return message.replace(regex,(url)=>{
+                return `<a href="${url}" target="_blank">${url}</a>`
+            })
+        }
+        function formatMarkdown(message){
+            message = message.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+            message = message.replace(/\*(.*?)\*/g, '<i>$1</i>');
+            message = message.replace(/__(.*?)__/g, '<u>$1</u>');
+            return message;
+        }
+
+        function format(message){
+            message=formatUrl(message)
+            message=formatMarkdown(message)
+            return message
+        }
+    </script>
+
+
+    <script>
+        function clearMessages() {
+            maincontainer.innerHTML = '';
+            console.log('%c🧩 [app]', 'background: #2c2f33; color: #00b0f4; padding: 2px 4px; border-radius: 4px;', 'removed messages from the current channel');
+        }
+        const noteCon = document.querySelector('.user-notes')
+        const templateNoteProf = document.getElementById('u-note')
+        function addProfileAtTheDirectsTopBar(user){
+            const clone=templateNoteProf.cloneNode(true)
+            clone.style = 'display:flex;'
+            clone.querySelector('.username').textContent = user.username
+            clone.querySelector('.user-pfp').src = user.pfp
+            console.log('%c🧩 [app]', 'background: #2c2f33; color: #00b0f4; padding: 2px 4px; border-radius: 4px;', `added profile for${user.username}`);
+            noteCon.appendChild(clone)
+        }
+        async function loadUsers() {
+            const res = await fetch('/getAllUsers')
+            const users = await res.json()
+            const container = document.querySelector('.profiles')
+            const template = document.getElementById('defprof')
+
+            users.accounts.forEach(user => {
+                const clone = template.cloneNode(true)
+                clone.style = 'display:flex;'
+                clone.querySelector('.username').textContent = user.username
+                clone.querySelector('.pfp').src = user.pfp
+                console.log('%c🧩 [app]', 'background: #2c2f33; color: #00b0f4; padding: 2px 4px; border-radius: 4px;', `added dm button for${user.username}`);
+                //clone.onclick = () => {}
+                addProfileAtTheDirectsTopBar(user)
+                container.appendChild(clone)
+                clone.onclick = async() => {
+                    //await LoadDirect(user)
+                    //window.location=`#directs/#${user.id}`
+                    console.log('%c🧩 [event]', 'background: #2c2f33; color: #00b0f4; padding: 2px 4px; border-radius: 4px;', `user clicked on direct for ${user.username}`);
+                    if (currentChannelId === user.id){
+                        if (!isDesktop()){
+                            show()
+                        }
+                        return
+                    } 
+                    history.pushState({},'',`/@me/${user.id}`)
+                    console.log('%c🧩 [app]', 'background: #2c2f33; color: #00b0f4; padding: 2px 4px; border-radius: 4px;', `channel was changed for ${user.id}`);
+                    route()
+                    if (!isDesktop()){
+                        show()
+                    }
+                }
+            })
+        }
+
+        loadUsers()
+
+        async function LoadDirect(user) {
+            console.log('%c🧩 [app]', 'background: #2c2f33; color: #00b0f4; padding: 2px 4px; border-radius: 4px;', `load direct request`);
+            document.querySelector('.not-useful--chats').style.display='none'
+            if (currentChannelId === user.id) return
+            document.getElementById('app-current-channel').style = "display: flex;"
+            clearMessages()
+            try {
+                const res = await fetch('/create-ch', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        firstId: 122,
+                        secondId: user.id,
+                    })
+                })
+                console.log('%c🧩 [app]', 'background: #2c2f33; color: #00b0f4; padding: 2px 4px; border-radius: 4px;', `created/got channel :430`);
+                const data = await res.json()
+                const innertopbar = document.getElementById('inner-chat-top-bar')
+                currentChannelId = data.channelId
+                socket.emit('leaveChannel', currentChannelId)
+                socket.emit('joinChannel', currentChannelId)
+                innertopbar.querySelector('.current-chat-user').textContent = user.username
+                txtbox.placeholder = `Message ${user.username}`
+                document.querySelector('.sc').textContent=`${user.username} | silly.chat`
+                document.title=`${user.username} | silly.chat`
+                innertopbar.querySelector('.current-chat-pfp').src = user.pfp
+                fetchMessages(currentChannelId)
+            } catch (err) {
+                console.log(err)
+            }   
+        }
+    </script>
+    <script>
+        const isMobile = /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+        const hideButton=document.getElementById('chat-back')
+        const innerchatbar=document.getElementById('inner-chat-top-bar')
+        if (!isMobile) { //-!
+            hideButton.style.display="none"
+            innerchatbar.classList.remove('onpc')
+            console.log('%c🧩 [app]', 'background: #2c2f33; color: #00b0f4; padding: 2px 4px; border-radius: 4px;', 'pc device detected');
+        } else {
+            hideButton.style.display="flex"
+            innerchatbar.classList.add('onpc')
+        }
+
+        const content=document.getElementById('app-main-content')
+        const dms=document.getElementById('app-aside-bar')
+        function show(){
+            content.classList.add('active')
+            content.classList.remove('notactive')
+            dms.classList.add('notactive')
+            dms.classList.remove('active')
+            //content0.style.display="flex"
+        }
+        function hide(){
+            content.classList.remove('active')
+            content.classList.add('notactive')
+            dms.classList.remove('notactive')
+            dms.classList.add('active')
+            //content0.style.display="none"
+        }
+        function normal(){
+            content.classList.add('active')
+            dms.classList.add('active')
+            dms.classList.remove('notactive')
+            content.classList.remove('notactive')
+            innerchatbar.classList.add('onpc')
+        }
+    </script>
+
+
+
+    <script>
+        async function route(){
+            const path=location.pathname.split('/')
+            if (path[1]==='@me'&&path[2]){
+                const uid=path[2]
+                let user= await getUser(uid)
+                console.log('%c🧩 [app]', 'background: #2c2f33; color: #00b0f4; padding: 2px 4px; border-radius: 4px;', `direct loading for ${user.username}`);
+                LoadDirect(user)
+            }else{
+                if (path[1]==='directs'&&path[2]==='home'){
+                    document.querySelector('.not-useful--chats').style.display='flex'
+                }
+                if (path[1]==='content'&&path[2]==='div'&&path[3]){
+                    const contentname=path[3]
+                    const div=document.querySelector(`.${contentname}`)
+                    if (div){
+                        //div.style.display='flex' ILL BE WORKING ON THIS LATER
+                    }
+                }
+            }
+        }
+        window.addEventListener('popstate',route)
+        window.addEventListener('DOMContentLoaded',route)
+
+    </script>
+
+
+    <script>
+        
+        async function fetchMessagesOld(targetId) {
+            try {
+                const res = await fetch(`/channels/${targetId}`);
+                const messages = await res.json();
+                const userIds = [...new Set(messages.map(m => m.ownerid))];
+                const userFetches = userIds.map(id =>
+                fetch(`/users/${id}`).then(r => r.json()).then(u => [id, u])
+                );
+                const entries = await Promise.all(userFetches);
+                const usersById = Object.fromEntries(entries);
+
+                if (!res.ok) {
+                    throw new Error('Failed to fetch messages11');
+                }
+                clearMessages()
+                messages.forEach(msg => {
+                    msg.user = usersById[msg.ownerid]
+                    displayMessage2(msg)
+                });
+            } catch (error) {
+                console.log(error);
+                //alert('Error fetching messages');
+            }
+        }
+        async function fetchMessages(targetId) {
+            try {
+                const res = await fetch(`/channels/${targetId}`);
+                const messages = await res.json();
+                const userIds = [...new Set(messages.map(m => m.ownerid))];
+                const userFetches = userIds.map(id =>
+                    fetch(`/users/${id}`).then(r => r.json()).then(u => [id, u])
+                );
+                const entries = await Promise.all(userFetches);
+                const usersById = Object.fromEntries(entries);
+
+                if (!res.ok) {
+                    throw new Error('Failed to fetch messages11');
+                }
+                messages.forEach(msg => {
+                    msg.user = usersById[msg.ownerid]
+                    displayMessage2(msg)
+                });
+            } catch (error) {
+                console.log(error);
+                //alert('Error fetching messages');
+            }
+        }
+    </script>
+
+
+
+
+    <script>
+        const domain='https://sillychat.up.railway.app/'
+        const domain0='http://localhost:3000/'
+        const domain1=domain0
+        let currentChannelId = 0 //await getLocalUser().id //0 g
+        const socket = io(domain1, {
+            withCredentials: true
+        });
+        socket.on('connect', (data) => {
+            console.log('%c🧩 [socket]', 'background: #2c2f33; color: #00b0f4; padding: 2px 4px; border-radius: 4px;', `connection was established`);
+        });
+        const txtbox = document.getElementById('user-input')
+        const maincontainer = document.getElementById('msgs')
+        txtbox.addEventListener('keydown', async (e) => {
+            if (e.key === 'Enter') {
+                if (e.shiftKey) {
+            // insert newline (invisible <br> style)
+            e.preventDefault()
+            const start = txtbox.selectionStart
+            const end = txtbox.selectionEnd
+            txtbox.value = txtbox.value.slice(0, start) + '<br>' + txtbox.value.slice(end)
+            txtbox.selectionStart = txtbox.selectionEnd = start + 4
+            return
+        }
+                if (txtbox.value==='') return
+                e.preventDefault()
+                let lastText
+                lastText=txtbox.value
+                const text = txtbox.value
+                //console.log('localuser: ',localuser)
+                try{
+                    const temp= localmsg(localuser,txtbox.value)
+                    const res= await postMsg(lastText)
+                    temp.remove()
+                }catch{
+                    notsendmessage(localuser,text)
+                }
+                txtbox.value = ''
+            }
+        })
+
+        async function postMsg(msg) {
+            try {
+                const res = await fetch('/sendMessage', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: msg,
+                        localId: 666,
+                        channelId: currentChannelId
+                    })
+                })
+                const text = await res.text()
+            } catch (err) {
+                console.log(err)
+                alert('could not connect to server')
+            }
+        }
+        const template = document.getElementById('msg')
+        function formatTimestamp(isoString) {
+            const msgDate = new Date(isoString)
+            const now = new Date()
+
+            const isToday = msgDate.toDateString() === now.toDateString()
+
+            const yesterday = new Date()
+            yesterday.setDate(now.getDate() - 1)
+            const isYesterday = msgDate.toDateString() === yesterday.toDateString()
+
+            const options = { hour: 'numeric', minute: '2-digit', hour12: true }
+            const timeStr = msgDate.toLocaleTimeString(undefined, options)
+
+            if (isToday) return timeStr
+            if (isYesterday) return `Yesterday at ${timeStr}`
+            return msgDate.toLocaleDateString() + ', ' + timeStr
+        }
+
+        async function displayMessageOld(data) {
+            const clone = template.cloneNode(true)
+            try {
+                const res = await fetch(`/users/${data.ownerid}`)
+                if (res.ok) {
+                    const userData = await res.json()
+                    clone.querySelector('.msg-user').innerText = userData.username
+                    clone.querySelector('.current-msg-pfp').src = userData.pfp
+                    clone.style="display: flex;"
+                    clone.querySelector('.msg-txt-content').innerText = data.message
+                    clone.querySelector('.msg-times').innerText = formatTimestamp(data.timestamp)
+                    maincontainer.appendChild(clone)
+                    maincontainer.scrollTop = maincontainer.scrollHeight
+                }
+            } catch (err) {
+
+            }
+        }
+
+        async function displayMessage2(data) {
+            const clone = template.cloneNode(true)
+            const userData = data.user
+            console.log('%c🧩 [displayMessage2]', 'background: #2c2f33; color: #00b0f4; padding: 2px 4px; border-radius: 4px;', `received user data: ${userData}`);
+            clone.querySelector('.msg-user').innerText = userData.username
+            clone.querySelector('.current-msg-pfp').src = userData.pfp
+            //clone.querySelector('.msg-txt-content').innerText = data.message do not delete
+            clone.querySelector('.msg-txt-content').innerHTML = await format(data.message)
+            clone.querySelector('.msg-times').innerText = formatTimestamp(data.timestamp)
+            
+            clone.style.display = 'flex'
+            maincontainer.appendChild(clone)
+            maincontainer.scrollTop = maincontainer.scrollHeight
+            clone.classList.toggle('show')
+        }
+
+
+        function localmsg(userData, textmsg) {
+            const clone = template.cloneNode(true)
+            
+            clone.querySelector('.msg-user').innerText = userData.username
+            clone.querySelector('.current-msg-pfp').src = userData.pfp
+            clone.querySelector('.msg-txt-content').textContent = textmsg
+            clone.querySelector('.msg-times').innerText = formatTimestamp(new Date().toISOString())
+            
+            clone.style.display = 'flex'
+            clone.style.opacity = 0.5
+            clone.classList.toggle('show')
+
+            maincontainer.appendChild(clone)
+            maincontainer.scrollTop = maincontainer.scrollHeight
+            return clone
+        }
+
+        function notsendmessage(userData, textmsg) {
+            const clone = template.cloneNode(true)
+            
+            clone.querySelector('.msg-user').innerText = userData.username
+            clone.querySelector('.current-msg-pfp').src = userData.pfp
+            clone.querySelector('.msg-txt-content').textContent = textmsg
+            clone.querySelector('.msg-times').innerText = formatTimestamp(new Date().toISOString())+ 'message was not sent.'
+            
+            clone.style.display = 'flex'
+            clone.style.color='red'
+
+            maincontainer.appendChild(clone)
+            maincontainer.scrollTop = maincontainer.scrollHeight
+            return clone
+        }
+
+        const noti = document.getElementById('noti')
+
+        socket.on('NewMessage', async(msg) => {
+            console.log('%c🧩 [app-socket]', 'background: #2c2f33; color: #00b0f4; padding: 2px 4px; border-radius: 4px;', `got a socket event`);
+            if (!msg){
+                console.log('%c🧩 [app-socket]', 'background: #2c2f33; color: #00b0f4; padding: 2px 4px; border-radius: 4px;', `no message detected`);
+                return
+            }
+            if (!msg.ownerid===localuser.id){
+                if (noti) noti.play().catch(e => console.warn('could not play sound:', e))
+                console.log('%c🧩 [app-socket]', 'background: #2c2f33; color: #00b0f4; padding: 2px 4px; border-radius: 4px;', `notification sound was played`);
+            }
+            if (msg.channelId.toString() === currentChannelId.toString()) {
+                console.log('got a message for '+currentChannelId.toString())
+                if (!msg.ownerid===localuser.id){
+                    if (noti) noti.play().catch(e => console.warn('could not play sound:', e))
+                }
+                try {
+                    const res = await fetch(`/users/${msg.ownerid}`);
+                    if (!res.ok) {
+                        console.log('res not okay');
+                        return;
+                    }
+                    const user = await res.json();
+                    msg.user = user;
+                    displayMessage2(msg);
+                } catch (err) {
+                    console.error('failed to fetch user for socket msg:', err);
+                }
+            }
+        })
+
+        socket.on('reload', ()=>location.reload())
+
+    </script>
+
+
+    <script>
+        //let localuser
+        window.localuser
+        async function getLocalUser(){
+            const res = await fetch('/users/0')
+            if (res.ok) {
+                localuser= await res.json()                
+                document.querySelector('.localpfp').src=localuser.pfp
+            }
+        }
+        async function abc() {
+            await getLocalUser()
+        }
+        abc()
+
+        async function getUser(id){
+            const res = await fetch(`/users/${id}`)
+            if (res.ok) {
+                return await res.json()                
+            }
+        }
+    </script>
+
+
+    <script>
+        document.querySelector('.window').classList.toggle('bluegrad')
+    </script>

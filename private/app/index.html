@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="silly.chat is an small project in development. go check it out!">
+    <title>silly.chat</title>
+    <link rel="stylesheet" href="/private/app/app.css">
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <link rel="icon" type="image/png" href="/favi/favicon.ico"/>
+</head>
+<body>
+
+    <script>
+        const dev=true
+    </script>
+
+    <div class="app-loader-mount">
+        <div class="app-loader">
+            <div class="inner-load">
+                <div class="spinner-wrapper">
+                    <img class="spinner" src="/private/app/assets/loader1.png" alt="spin" srcset="">
+                </div>
+            </div>
+            <div style="position: fixed; bottom: 1rem;">
+                <p style="font-family: semibold; color: rgba(255, 255, 255, 0.651);">problems connecting? the site owner might know what’s up—give ’em a shout.</p>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="toast" style="display: none;">
+        <div class="inner-toast">
+            <div class="image">
+
+            </div>
+            <div class="content">
+                <span>Profile picture succesfully changed!</span>
+                <p>Your profile pic has been changed</p>
+            </div>
+            <div class="close">
+
+            </div>
+        </div>
+    </div>
+
+    <div class="app-mount">
+        <div class="topbar">
+            <span class="sc" style="font-weight: 900; font-size: 0.9rem; font-family: regular; color: rgb(172, 180, 212);">silly.chat</span>
+            <div class="windowOptionsOld" style="-webkit-app-region: no-drag; display: none; justify-self: flex-end; position: absolute; right: 1rem; gap: 1rem;">
+                <button onclick="window.electronAPI.minimize()" class="nobg"><img src="/private/app/assets/window/min.png" alt="" srcset=""></button>
+                <button onclick="window.electronAPI.maximize()" class="nobg"><img src="/private/app/assets/window/max.png" alt="" srcset=""></button>
+                <button onclick="window.electronAPI.close()" class="nobg"><img src="/private/app/assets/window/clo.png" alt="" srcset=""></button>
+            </div>
+ 
+            <div class="windowOptions" style="z-index: 1000; -webkit-app-region: no-drag; display: flex; justify-self: flex-end; position: absolute; right: 0rem; font-size: 17px;">
+                <button onclick="window.electronAPI.minimize()" id="min" class="tb icon-font" style="font-family: Segoe MDL2 Assets;">&#xE921;</button>
+                <button onclick="window.electronAPI.maximize();" id="max" class="tb icon-font" style="font-family: Segoe MDL2 Assets;">&#xE922;</button>
+                <button onclick="window.electronAPI.close()" id="clo" class="tb icon-font tbclose" style="font-family: Segoe MDL2 Assets;">&#xE8BB;</button>
+            </div>
+        </div>
+        <div class="window">
+            <div class="not-app-mount">
+                <div class="app-topbar ns">
+                    <div class="inner-app-topbar">
+                        <div class="conv-input">
+                            <input class="input" type="text" placeholder="Find or start a conversation" style="margin-left: 1rem;">
+                        </div>
+
+                    </div>
+                    <div>
+                        <button class="btrans" id="drop-profile-button"><img class="localpfp" src="https://i.pinimg.com/736x/50/f5/41/50f5413e122f31301f3f8ba356db55b5.jpg" style="border-radius: 100rem; height: 2.2rem;width: 2.2rem; margin-left: 0.7rem; ">                        </button>
+                    </div>
+
+                </div>
+                <div id="drop-profilee" class="dropdown ns" style="position: fixed; right: 0.3rem;">
+                    <button class="sbut" onclick="window.location.reload()">Reload app</button>
+                    <button class="sbut" onclick="document.querySelector('.app-settings-mount').classList.add('visible')">Settings</button>
+                    <button class="sbut" onclick="window.location='/logout'">Log out</button>
+                </div>
+
+                <div class="app-layout">
+                    <div id="app-aside-bar" class="app-aside-bar ns" style="padding-left: 1.2rem;">
+                        <div class="inner-aside-bar" style="width: 100%;">
+                            <div class="user-notes" style="width: 100%; height: 30%; margin-top: 1rem;">
+                                <button id="u-note" class="user-note" style="cursor: pointer; display: none;">
+                                    <img class="user-pfp" src="https://i.pinimg.com/736x/50/f5/41/50f5413e122f31301f3f8ba356db55b5.jpg" style="border-radius: 100rem; height: 4.5rem;width: 4.5rem;">
+                                    <span class="username" style="font-family: regular; margin-top: 0.4rem; color: #c4caf0; text-overflow:ellipsis; white-space:nowrap; overflow: hidden; font-size: 0.9rem; font-weight: 500;">itzme_kayy4</span>
+                                </button>
+                            </div>
+                            <div class="direct-msgs" style="margin-top: 1.4rem; overflow-x: hidden;">
+                                <div class="top" style="margin-bottom: 0.6rem;">
+                                    <span style="font-family: semibold; color: #646788; font-weight: 900; text-overflow:ellipsis; white-space:nowrap; overflow: hidden;">Direct messages</span>
+                                </div>
+                                <div class="profiles" style="overflow-x: hidden;">
+                                    <button.a id="defprof" style="display: none; background-color: black; width: 10vw;" class="profile">
+                                        <img class="pfp" src="https://i.pinimg.com/736x/cb/87/1e/cb871e4708cba30bbdc95b300abb9fab.jpg" style="border-radius: 100rem; height: 2.2rem;width: 2.2rem; margin-right: 0.7rem; ">
+                                        <span class="username" style="color: #c4caf0; text-overflow:ellipsis; white-space:nowrap; overflow: hidden; font-size: 0.9rem; font-weight: 500; font-family: imedium;">cat murderer 300</span>
+                                    </button>
+                                </div>
+                                <div class="local-profile">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="app-main-content" class="app-main-content">
+                        <div class="not-useful--chats ns">
+                            <div class="flex-centered flex-top-eachother" style="gap: 0.5rem;">
+                                <img src="/private/app/assets/directsicon.png" alt="" srcset="">
+                                <h1 class="text-centered" style="color: rgba(255, 255, 255, 0.747);">it's quiet... too quiet</h1>
+                                <p class="text-centered" style="color: rgba(255, 255, 255, 0.623);">click a chat and break the silence — the messages won’t send themselves 👀</p>
+                            </div>
+                        </div>
+                        <div id="app-current-channel" class="app-current-channel"style="display: none;">
+                            <div class="chat-topbar ns">
+                                <div id="inner-chat-top-bar" class="inner-chat-top-bar">
+                                    <button id="chat-back" class="back" style="margin-right: 0.5rem; margin-left: 0.5rem;" onclick="hide()" style="padding: 0rem 0rem !important; border-radius: 144rem; transform: scale(0.6);"><img src="/private/app/assets/arrow-left.png" alt="arrow-left" srcset=""></button>
+                                    <img class="current-chat-pfp" src="" style="border-radius: 100rem; height: 2.2rem; margin-right: 0.7rem;">
+                                    <span class="current-chat-user" style="font-family: imedium; font-size: 0.93rem; font-weight: 400; color: rgb(208, 209, 233);">wumpus</span>             
+                                </div>
+                            </div>
+                            <div class="inner-content">
+                                <div id="msgs" class="messages" style="overflow-y: auto; padding-top: 3rem;">
+                                    <div id="msg" class="msg">
+                                        <div class="inner-msg" style="padding-left: 2.2rem;">
+                                            <div class="inner-pfp" style="display: block; margin: auto; text-align: center;">
+                                                <img class="current-msg-pfp ns" src="" style= "display: flex; justify-content: bottom; border-radius: 100rem; height: 2.2rem; margin-right: 0.7rem;">
+                                            </div>
+                                            <div class="msg-content">
+                                                <div>
+                                                    <span class="msg-user breakable" style="font-family: medium; color: rgb(202, 208, 228);">itzme_kayy4</span>
+                                                    <span class="msg-times breakable" style="font-size: 0.7rem; color: rgb(116, 115, 131); font-family: regular;">12:00 PM</span>
+                                                </div><!--use regular, i think the iregular is better, but in the future, if u want u could use regular-->
+                                                <p class="msg-txt-content breakable" style="font-family: iregular; white-space: normal; word-wrap: break-word; overflow-wrap: break-word; color: rgb(193, 194, 223);">hello!!</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="userInput ns">
+                                    <button class="nobg uploadBt"><img class="uploadImg" src="/private/app/assets/upload.png" alt="" srcset=""></button>
+                                    <input id="user-input" type="text" placeholder="Message your self!" class="user-input">
+                                    <button class="nobg uploadBt mobileSendButton"><img class="uploadImg" src="/private/app/assets/send2.png" alt="" srcset=""></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="app-aside-bar-right">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>  
+    </div>
+
+    <div class="app-settings-mount">
+        <div class="not-settings-mount">
+            <div class="circle">
+                
+            </div>
+            <div class="app-settings" >
+                <div class="settings-top">
+                    <button onclick="document.querySelector('.app-settings-mount').classList.remove('visible')">close</button>
+                </div>
+                <div class="s-content">
+                    <div class="aside-set">
+                        <div class="s-cat" id="cat-1">
+                            <h5 class="TXT-GREY" style="margin-left: 1.5rem; margin-bottom: 0.5rem; font-family: semibold;">ACCOUNT</h5>
+                            <button class="txt-tra">My Account</button>
+                        </div>
+                    </div>
+                    <div class="set-content">
+                        <section id="account">
+                            <h2 style="color: rgba(255, 255, 255, 0.644); font-family: semibold;">My Account</h2>
+                            <div class="sec-set-content">
+                                <div class="container-1">
+                                    <input id="pfpin" type="text" placeholder="Enter a url to an image">
+                                    <button onclick="updPfp()" class="txt-tra" style="padding-right: 0.5rem;">Update profile photo</button>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <audio id="noti" preload="auto" src="/private/app/assets/noti.mp3"></audio>
+
+    <!--Critical Scripts-->
+        <script src="/private/app/js/socket.js"></script> <!--This script lets know the client when to update the window, or just receive messages-->
+        <script src="/private/app/js/electron.js"></script> <!--Electron app custom titlebar shi-->
+        <script src="/private/app/js/get-local-user.js"></script> <!--This gets the client user, and loads the profile photo-->
+
+    <!--Semi-critical scripts-->
+        <script src="/private/app/js/loader-app.js"></script> <!--Loader app-->
+        <script src="/private/app/js/window-scaling.js"></script> <!--Scales the app depending on the viewport size-->
+        <script src="/private/app/js/app-scaler2.js"></script> <!--2nd app scaling script-->
+
+    <!--Important Scripts-->
+        <script src="/private/app/js/multifunctional scripts/m1.js"></script> <!--m1 stands for multifunctional, it loads the directs, users and usernotes. also handles for clicks in one of the directs-->
+        <script src="/private/app/js/multifunctional scripts/m2-message-posting-rendering.js"></script> <!--This is a large script, this lets you post and render messages-->
+        <script src="/private/app/js/user-input.js"></script> <!--This script handles the userr input textbox-->
+        <script src="/private/app/js/fetch-msgs.js"></script> <!--This loads the current channel id messages-->
+        <script src="/private/app/js/routing.js"></script> <!--to achieve the /@me/userid routes, i use this script to make things easier, and if the window is reloaded, you dont have to search for that dm again-->
+
+    <!--Semi-important scripts-->
+        <script src="/private/app/js/msg-formatter.js"></script> <!--Formats messages-->
+
+    <!--Secundary scripts (app can fully work without these) -->
+        <script src="/private/app/js/upd-pfp.js"></script> <!--update profile function-->
+        <script src="/private/app/js/profile-dropdown.js"></script> <!--Profile dropdown (settings, logout, reload etc)-->
+
+    <!--Other scripts-->
+        <script src="/private/app/js/themes.js"></script>
+</body>
+</html>

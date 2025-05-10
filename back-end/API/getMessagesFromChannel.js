@@ -15,7 +15,7 @@ async function getMessagesFromChannel(channelId,userId) {
   const channels=JSON.parse(base64.decode(channelRes.data.content))
   
   const channel=channels.find(c => c.id.toString() === channelId.toString())
-  if (!channel) throw new Error('404_not_found')
+  if (!channel)
     if (
       channel.userId.toString() !== userId.toString() &&
       channel.secUserId.toString() !== userId.toString()

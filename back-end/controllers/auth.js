@@ -18,8 +18,11 @@ async function register(req, res) {
             id: accounts.length > 0 ? accounts[accounts.length - 1].id + 1 : 1,
             username,
             password:hsh,
+            registerDate:new Date().toISOString(),
+            isBanned:false,
             pfp:'https://img.freepik.com/premium-vector/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-vector-illustration_561158-3407.jpg',
-            friends:{}
+            friends:{},
+            directs:{}
         };
 
         accounts.push(newUser);

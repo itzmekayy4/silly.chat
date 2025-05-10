@@ -1,0 +1,1 @@
+document.querySelector('.window').classList.toggle('bluegrad')

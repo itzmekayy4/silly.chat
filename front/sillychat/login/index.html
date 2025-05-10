@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>silly.chat</title>
     <link rel="stylesheet" href="app.css">
+    <link rel="icon" type="image/png" href="/favi/favicon.ico" />
 </head>
 <body>
     <div class="app-mount">
@@ -29,7 +30,7 @@
     </div>
 
     <script>
-        const DEFAULT_CHAT_PATH='/private/v4Net/index.html'
+        const DEFAULT_CHAT_PATH='/private/app/'
         document.getElementById('login').addEventListener('submit', async function (e) {
             e.preventDefault()
             const username = document.getElementById('username').value.trim()

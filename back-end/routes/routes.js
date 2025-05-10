@@ -2,14 +2,23 @@ const express = require('express');
 const path=require('path')
 const { register, validate } = require('../controllers/auth');
 //const { getMessagesFromTargetId, getSafeUsers,getMessagesFromChannel } = require('../services/services-acc');
-const { newChannel, sendMsg,getMessagesFromTargetId,getSafeUsers,getMessagesFromChannel, getUser, newChannel2 }=require('../API/functions')
+const { newChannel, sendMsg,getMessagesFromTargetId,getSafeUsers,getMessagesFromChannel, getUser, newChannel2 }=require('../API/functions');
+const { logout } = require('../API/logout');
+const { updateUserPfp } = require('../API/upd-pfp');
+const { newGroup } = require('../API/new-group');
+const { getGroups } = require('../API/getGroups');
 
 const router = express.Router();
 
 router.post('/register', register);
 router.post('/validate', validate);
 router.post('/create-ch', newChannel);
+router.post('/create-group', newGroup);
 router.post('/sendMessage', sendMsg);
+router.get('/logout', logout);
+router.post('/updatePfp', async(req,res)=>{
+    await updateUserPfp(req,res)
+});
 router.get('/messages/:targetId',async(req,res)=>{
     const targetid1=parseInt(req.params.targetId);
     try{
@@ -71,6 +80,16 @@ router.get('/getAllUsers',async(req,res)=>{
     } catch(err){
         console.log(err)
         res.status(500).send('Internal server error: Failed at fetching users')
+    }
+});
+
+router.get('/api/getgroups',async(req,res)=>{
+    try{
+        const groups=await getGroups()
+        res.json(groups)
+    } catch(err){
+        console.log(err)
+        res.status(500).send('Internal server error: Failed at fetching groups')
     }
 });
 

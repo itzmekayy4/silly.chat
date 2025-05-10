@@ -9,6 +9,7 @@ const { newChannel } =require('./new-channel')
 const { sendMsg } =require('./send-msg')
 const { writeMessage } =require('./writeMessage')
 const { newChannel2 } =require('./create-ch-new')
+const { logout } = require('./logout')
 
 module.exports={
     newChannel,
@@ -21,5 +22,6 @@ module.exports={
     sendMsg,
     writeMessage,
     getUser,
-    newChannel2
+    newChannel2,
+    logout
 }

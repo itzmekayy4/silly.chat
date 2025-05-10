@@ -43,7 +43,7 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(60deg, #297b7e, #2539a5,#a5259a);
+    background: linear-gradient(130deg, #0b1042, #0e115e,#0f0f49, #0c134d, #0b0e3b, #0d1755, #111964);
     backdrop-filter: blur(100px);
     margin-bottom: 1rem;
     overflow: hidden;
@@ -140,7 +140,7 @@ input{
 }
 
 .loginbg{
-    background: linear-gradient(60deg, #297b7e, #2539a5,#a5259a); /* Gradient from pink to peach */
+    background: linear-gradient(130deg, #0b1042, #0e115e,#0f0f49, #0c134d, #0b0e3b, #0d1755, #111964);
     padding: 13rem 11rem;
     position: absolute;
     z-index: -1;
