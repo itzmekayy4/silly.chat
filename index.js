@@ -9,7 +9,7 @@ const { Server } = require('socket.io');
 
 const isProd = process.env.NODE_ENV === 'production'
 const domain = isProd
-  ? 'https://sillychat.up.railway.app'
+  ? 'https://sillychat.vercel.app/'
   : 'http://localhost:3000'
 //app
 const app = express()
