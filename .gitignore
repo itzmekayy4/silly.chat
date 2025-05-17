@@ -1,4 +1,12 @@
-node_modules
-.log
-.vscode
-dist
+# dependencies
+node_modules/
+
+# env + logs
+.env
+*.log
+
+# vscode settings
+.vscode/
+
+# build output
+dist/
