@@ -1,11 +1,13 @@
+require('dotenv').config()
+
 const axios=require('axios')
 const base64=require('base-64')
 
-const GIT_TOKEN='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'
-const REPO='itzmekayy4/storage'
-const ACCOUNTS='accounts.json'
-const MESSAGES='messages.json'
-const CHANNELS='channels.json'
+const GIT_TOKEN = process.env.GIT_TOKEN
+const REPO = process.env.REPO
+const MESSAGES = process.env.MESSAGES
+const ACCOUNTS = process.env.ACCOUNTS
+const CHANNELS = process.env.CHANNELS
 
 async function getAccounts() {
     const url=`https://api.github.com/repos/${REPO}/contents/${ACCOUNTS}`
